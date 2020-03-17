@@ -19,6 +19,6 @@ public class PlayerEditor : Editor
         EditorGUILayout.LabelField("Debug Info", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("Velocity/Update\t" + p.Velocity, style);
         EditorGUILayout.LabelField("Velocity/Second\t" + p.VelocityPerSecond, style);
-        EditorGUILayout.LabelField("JumpGravModEnable/Second\t" + p.JumpGravModEnable, style);
+        EditorGUILayout.LabelField("OnGround\t" + p.OnGround, style);
     }
 }

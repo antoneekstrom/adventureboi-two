@@ -7,29 +7,24 @@ public class PlayerController : MonoBehaviour
 {
     [Header("General")]
     public float movementSpeed = 4f;
-    public float mass = 2f;
     public float gravity = 16f;
     public float maxVelocity = 15f;
 
     [Header("Jump")]
-    public float initialJumpForce = 100f;
-    public float jumpImpactDuration = 0.1f;
-    public float jumpGravityModifier = 0.7f;
+    public float jumpVelocity = 3f;
+    public float jumpFallMultiplier = 0.1f;
+    public float jumpHoldModifier = 0.7f;
     public KeyCode jumpKey = KeyCode.Space;
 
-    private bool jumpFrame = false;
-    private bool jumpDown = false;
-    private bool canJump = true;
-    private float jumpStartTime;
+    public bool OnGround { get; private set; }
+    public Vector2 Velocity => _velocity;
+    public Vector2 VelocityPerSecond => _velocity / Time.fixedDeltaTime;
 
-    public Vector2 Velocity => velocity;
-    public Vector2 VelocityPerSecond => velocity / Time.fixedDeltaTime;
-    public bool JumpGravModEnable => jumpDown && velocity.y > 0.01;
-    private float JumpTime => Time.time - jumpStartTime;
-
+    private bool prevOnGround = false;
+    private Vector2 _velocity;
     private Vector2 input;
-    private Vector2 velocity;
 
+    private Collider2D col;
     private Animator animator;
     private Rigidbody2D rb;
 
@@ -37,6 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
     }
 
     private void Reset()
@@ -48,7 +44,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        ComputeOnGround();
         UpdateInput();
+
+        UpdateMovement();
+        UpdateJump();
+
         UpdateAnimator();
     }
 
@@ -57,64 +58,58 @@ public class PlayerController : MonoBehaviour
         UpdatePhysics();
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        velocity.y = 0;
-        canJump = true;
-    }
-
     private void UpdatePhysics()
     {
-        rb.MovePosition(transform.position + (Vector3)ComputeVelocity());
+        if (!OnGround)
+            _velocity += Vector2.down * gravity * Time.fixedDeltaTime;
+        else if (!prevOnGround && OnGround)
+            _velocity.y = 0;
+
+        if (VelocityPerSecond.magnitude > maxVelocity)
+            _velocity = _velocity.normalized * maxVelocity * Time.fixedDeltaTime;
+
+        rb.MovePosition(transform.position + (Vector3)_velocity);
+    }
+
+    private void UpdateMovement()
+    {
+        _velocity.x = (input * movementSpeed).x * Time.fixedDeltaTime;
+    }
+
+    private void UpdateJump()
+    {
+        if (Input.GetKeyDown(jumpKey) && OnGround)
+        {
+            _velocity += Vector2.up * jumpVelocity;
+        }
+    }
+
+    private void ComputeOnGround()
+    {
+        Vector2 offset = Vector2.down * (col.bounds.extents.y + 0.1f);
+        Vector2 origin = (Vector2)transform.position + offset;
+        Vector2 direction = Vector2.up;
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 0.1f);
+
+        prevOnGround = OnGround;
+        OnGround = hit.collider;
+
+        if (Input.GetKeyDown(KeyCode.E))
+            Debug.Log(hit.collider.name);
+
+        Debug.DrawRay(origin, origin + direction * hit.distance, OnGround ? Color.green : Color.red);
     }
 
     private void UpdateInput()
     {
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-        jumpDown = Input.GetKey(jumpKey);
-        jumpFrame = Input.GetKeyDown(jumpKey);
-
-        if (jumpFrame && canJump)
-        {
-            canJump = false;
-            jumpStartTime = Time.time;
-        }
     }
 
     private void UpdateAnimator()
     {
-        animator.SetFloat("VelocityMag", velocity.magnitude);
+        animator.SetFloat("VelocityMag", _velocity.magnitude);
         animator.SetFloat("MovementX", input.x);
         animator.SetFloat("MovementY", input.y);
-    }
-
-    private float ComputeJumpAcceleration()
-    {
-        return JumpTime <= jumpImpactDuration ?
-            (initialJumpForce / mass) * Time.fixedDeltaTime : 0;
-    }
-
-    private Vector2 ComputeVelocity()
-    {
-        float vx = (input * movementSpeed).x * Time.fixedDeltaTime;
-
-        float dvy =
-            ComputeJumpAcceleration()
-            -ComputeGravityAcceleration();
-        float vy = velocity.y + dvy * Time.fixedDeltaTime;
-
-        velocity = new Vector2(vx, vy);
-
-        if (VelocityPerSecond.magnitude > maxVelocity)
-            velocity = velocity.normalized * maxVelocity * Time.fixedDeltaTime;
-
-        return velocity;
-    }
-
-    private float ComputeGravityAcceleration()
-    {
-        return gravity * Time.fixedDeltaTime * (JumpGravModEnable ? jumpGravityModifier : 1);
     }
 
 }
