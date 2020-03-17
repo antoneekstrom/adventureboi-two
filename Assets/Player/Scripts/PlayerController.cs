@@ -1,44 +1,55 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(Collider2D))]
 public class PlayerController : MonoBehaviour
 {
     [Header("General")]
-    public float movementSpeed = 4f;
-    public float gravity = 16f;
-    public float maxVelocity = 15f;
+    public float movementVelocity = 10f;
+    public float inAirMovementModifier = 0.5f;
+
+    [Header("Dropkick")]
+    public float dropkickForce = 100f;
+    public Vector2 dropkickBoost = Vector2.zero;
 
     [Header("Jump")]
-    public float jumpVelocity = 3f;
-    public float jumpFallMultiplier = 0.1f;
-    public float jumpHoldModifier = 0.7f;
+    public float jumpVelocity = 12f;
+    public float jumpFallModifier = 1.2f;
+    public float jumpHoldModifier = 0.05f;
+    public float gravityModifier = 1.2f;
+    public float groundCheckOffset = 0.11f;
+
+    [Header("Keybindings")]
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode dropkickKey = KeyCode.E;
 
+    public event Action OnLandOnGround;
+
+    public bool IsHoldingJump { get; private set; }
+    public bool IsFalling { get; private set; }
     public bool OnGround { get; private set; }
-    public Vector2 Velocity => _velocity;
-    public Vector2 VelocityPerSecond => _velocity / Time.fixedDeltaTime;
 
-    private bool prevOnGround = false;
-    private Vector2 _velocity;
+    private bool isDropkicking = false;
     private Vector2 input;
 
     private Collider2D col;
     private Animator animator;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+
+        OnLandOnGround += PlayerController_OnLandOnGround;
     }
 
     private void Reset()
     {
         var rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0;
         rb.freezeRotation = true;
     }
 
@@ -49,67 +60,84 @@ public class PlayerController : MonoBehaviour
 
         UpdateMovement();
         UpdateJump();
+        UpdateDropkick();
 
         UpdateAnimator();
     }
 
-    private void FixedUpdate()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        UpdatePhysics();
+        if (isDropkicking)
+        {
+            collision.collider.attachedRigidbody.AddForce(rb.velocity * dropkickForce);
+        }
     }
 
-    private void UpdatePhysics()
+    private void PlayerController_OnLandOnGround()
     {
-        if (!OnGround)
-            _velocity += Vector2.down * gravity * Time.fixedDeltaTime;
-        else if (!prevOnGround && OnGround)
-            _velocity.y = 0;
+        isDropkicking = false;
+    }
 
-        if (VelocityPerSecond.magnitude > maxVelocity)
-            _velocity = _velocity.normalized * maxVelocity * Time.fixedDeltaTime;
-
-        rb.MovePosition(transform.position + (Vector3)_velocity);
+    private void UpdateDropkick()
+    {
+        if (Input.GetKeyDown(dropkickKey) && OnGround)
+        {
+            isDropkicking = true;
+            DoJump();
+            rb.velocity += new Vector2(input.x, 1) * dropkickBoost;
+        }
     }
 
     private void UpdateMovement()
     {
-        _velocity.x = (input * movementSpeed).x * Time.fixedDeltaTime;
+        rb.velocity += Vector2.right * (input * movementVelocity).x * Time.fixedDeltaTime;
+    }
+
+    private void DoJump()
+    {
+        rb.velocity += (Vector2.up * jumpVelocity);
     }
 
     private void UpdateJump()
     {
+        IsFalling = rb.velocity.y < 0;
+        float jumpModifier = IsFalling ? jumpFallModifier : (IsHoldingJump ? jumpHoldModifier : 1);
+        rb.AddForce(Physics2D.gravity * rb.mass * gravityModifier * jumpModifier);
+
         if (Input.GetKeyDown(jumpKey) && OnGround)
-        {
-            _velocity += Vector2.up * jumpVelocity;
-        }
+            DoJump();
     }
 
     private void ComputeOnGround()
     {
-        Vector2 offset = Vector2.down * (col.bounds.extents.y + 0.1f);
-        Vector2 origin = (Vector2)transform.position + offset;
-        Vector2 direction = Vector2.up;
-        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 0.1f);
+        float d2g = col.bounds.extents.y + groundCheckOffset;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, d2g);
 
-        prevOnGround = OnGround;
-        OnGround = hit.collider;
+        bool oldOnGround = OnGround;
+        OnGround = hit.collider != null;
 
-        if (Input.GetKeyDown(KeyCode.E))
-            Debug.Log(hit.collider.name);
+        if (!oldOnGround && OnGround)
+            OnLandOnGround?.Invoke();
 
-        Debug.DrawRay(origin, origin + direction * hit.distance, OnGround ? Color.green : Color.red);
+        Debug.DrawRay(transform.position, Vector2.down * hit.distance, OnGround ? Color.green : Color.red);
     }
 
     private void UpdateInput()
     {
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        IsHoldingJump = Input.GetKey(jumpKey);
     }
 
     private void UpdateAnimator()
     {
-        animator.SetFloat("VelocityMag", _velocity.magnitude);
-        animator.SetFloat("MovementX", input.x);
-        animator.SetFloat("MovementY", input.y);
+        animator.SetFloat("VelocityX", rb.velocity.x);
+        animator.SetFloat("VelocityY", rb.velocity.y);
+        animator.SetFloat("VelocityMag", rb.velocity.magnitude);
+        animator.SetBool("OnGround", OnGround);
+        animator.SetBool("IsHoldingJump", IsHoldingJump);
+        animator.SetFloat("InputX", input.x);
+        animator.SetFloat("InputY", input.y);
+        animator.SetBool("IsDropkicking", isDropkicking);
     }
 
 }

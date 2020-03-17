@@ -161,7 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2013388993}
   offset: {x: 0, y: 1, z: -100}
-  lerpSpeed: 3
+  lerpSpeed: 10
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -686,7 +686,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -792,10 +792,10 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 2
   m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 70cd8d494b8110748b3e0147fb977bf2, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -838,7 +838,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 808075315732030645, guid: a56e84c3e7b72af49b3b79babf736d19, type: 3}
+  m_Sprite: {fileID: 5853465290965917186, guid: 145181ecffc73df4b94f9e0b2a839970,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -857,7 +858,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013388989}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.36, y: 0.68, z: -1}
+  m_LocalPosition: {x: -0.67, y: 0.3, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -875,13 +876,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1336164c4633784c9119d957745f125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 6
-  gravity: 4
-  maxVelocity: 15
-  jumpVelocity: 4
-  jumpFallMultiplier: 1
-  jumpHoldModifier: 1
+  movementVelocity: 10
+  inAirMovementModifier: 0.5
+  dropkickForce: 700
+  dropkickBoost: {x: 4, y: 1.5}
+  jumpVelocity: 12
+  jumpFallModifier: 1.2
+  jumpHoldModifier: 0.05
+  gravityModifier: 1.2
+  groundCheckOffset: 0.11
   jumpKey: 32
+  dropkickKey: 101
+  rb: {fileID: 0}
 --- !u!70 &2013388995
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -891,7 +897,7 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 2013388989}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 70cd8d494b8110748b3e0147fb977bf2, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -955,7 +961,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
