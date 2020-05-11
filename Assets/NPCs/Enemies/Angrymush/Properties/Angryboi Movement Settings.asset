@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d45c2a91bd6c0754a8c15fb304c9800c, type: 3}
+  m_Name: Angryboi Movement Settings
+  m_EditorClassIdentifier: 
+  movementVelocity: 10
+  sprintModifier: 1.5
+  inAirMovementModifier: 0.5
+  maxGapRange: 1
+  wallRange: 1
+  maxWallRange: 10
+  onGroundTolerance: 0.1
+  maxJumpForce: 65
+  jumpCooldown: 0.2
+  inAirGravityModifier: 2

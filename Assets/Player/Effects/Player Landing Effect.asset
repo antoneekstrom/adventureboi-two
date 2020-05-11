@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad2e95ccfa66f23479d3550a437414c0, type: 3}
+  m_Name: Player Landing Effect
+  m_EditorClassIdentifier: 
+  effectName: Landing FX
+  effect: {fileID: 3666201431313259034, guid: 843de9cd6e91a884283ce6b09a57976b, type: 3}
+  origin: {fileID: 0}
+  parent: {fileID: 0}
+  offset: {x: 0, y: -1, z: -1}

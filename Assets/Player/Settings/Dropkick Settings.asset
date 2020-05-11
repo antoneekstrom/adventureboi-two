@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc2f085371a204408fd3b90c493b9f4, type: 3}
+  m_Name: Dropkick Settings
+  m_EditorClassIdentifier: 
+  cooldownPercentageStore: {fileID: 11400000, guid: 00b84fa1730c07c439c8531d94856ff9,
+    type: 2}
+  onDropkickEvent: {fileID: 11400000, guid: aed6825865280ee4bb40f7fda0750d9a, type: 2}
+  dropkickCooldown: 0.5
+  dropkickTorque: 60
+  dropkickSpeedModifier: 1.2
+  dropkickForce: {x: 40, y: 25}
+  dropkickBoost: {x: 7, y: 2}
+  dropkickEffect: {fileID: 3284698430093809432, guid: c6731f9cb075fca449d3615e0cf4ef22,
+    type: 3}
+  dropkickSlowTimeDuration: 0.15
+  dropkickTimeModifier: 0.4

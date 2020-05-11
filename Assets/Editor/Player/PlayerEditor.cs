@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using static EditorHelper;
 
 [CustomEditor(typeof(PlayerController))]
 public class PlayerEditor : Editor
@@ -11,15 +12,15 @@ public class PlayerEditor : Editor
         base.OnInspectorGUI();
 
         PlayerController p = (PlayerController)target;
+        GUIStyle style = RichLabel;
 
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.richText = true;
-
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Debug Info", EditorStyles.boldLabel);
-        EditorGUILayout.LabelField("Velocity\t" + p.rb.velocity, style);
-        EditorGUILayout.LabelField("OnGround\t" + p.OnGround, style);
-        EditorGUILayout.LabelField("Holding Jump\t" + Input.GetKey(p.jumpKey), style);
-        EditorGUILayout.LabelField("Falling\t" + (p.rb.velocity.y < 0), style);
+        Header("Debug Info");
+        if (p.Rigidbody != null)
+        {
+            EditorGUILayout.LabelField("Velocity\t" + p.Rigidbody.velocity, style);
+            EditorGUILayout.LabelField("OnGround\t" + p.OnGround, style);
+            EditorGUILayout.LabelField("Holding Jump\t" + Input.GetKey(p.jumpKey), style);
+            EditorGUILayout.LabelField("IsFalling\t" + (p.IsFalling), style);
+        }
     }
 }

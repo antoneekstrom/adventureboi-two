@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e4e4fc705376343a3e65b25d94f0e2, type: 3}
+  m_Name: Dirt Terrain Tile
+  m_EditorClassIdentifier: 
+  m_Sprites:
+  - {fileID: 8101686638667905374, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
+  - {fileID: -1488598233194172691, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
+  - {fileID: 0}
+  - {fileID: 2025519051437982569, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 4934180164189823904, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 6208331192199845713, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
+  - {fileID: -7106618839598766334, guid: 6849c6f788d220a40a345d6da665b190, type: 3}
